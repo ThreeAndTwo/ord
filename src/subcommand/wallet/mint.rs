@@ -1,4 +1,3 @@
-use std::hash::Hash;
 use bitcoincore_rpc::RawTx;
 use super::*;
 
