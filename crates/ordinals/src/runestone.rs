@@ -132,6 +132,8 @@ impl Runestone {
     if let Some(etching) = self.etching {
       let mut flags = 0;
       Flag::Etching.set(&mut flags);
+      println!("标记 Etching: {:?}", flags);
+
 
       if etching.terms.is_some() {
         Flag::Terms.set(&mut flags);
@@ -140,8 +142,10 @@ impl Runestone {
       if etching.turbo {
         Flag::Turbo.set(&mut flags);
       }
+      println!("最终标记 flags: {:?}", flags);
 
       Tag::Flags.encode([flags], &mut payload);
+      println!("编码 Flags: {:?}", payload);
 
       Tag::Rune.encode_option(etching.rune.map(|rune| rune.0), &mut payload);
       Tag::Divisibility.encode_option(etching.divisibility, &mut payload);
@@ -156,17 +160,21 @@ impl Runestone {
         Tag::HeightEnd.encode_option(terms.height.1, &mut payload);
         Tag::OffsetStart.encode_option(terms.offset.0, &mut payload);
         Tag::OffsetEnd.encode_option(terms.offset.1, &mut payload);
+        println!("编码 Terms 数据: {:?}", payload);
       }
     }
 
     if let Some(RuneId { block, tx }) = self.mint {
       Tag::Mint.encode([block.into(), tx.into()], &mut payload);
+      println!("编码 Mint 数据: {:?}", payload);
     }
 
     Tag::Pointer.encode_option(self.pointer, &mut payload);
+    println!("编码 Pointer 数据: {:?}", payload);
 
     if !self.edicts.is_empty() {
       varint::encode_to_vec(Tag::Body.into(), &mut payload);
+      println!("开始处理 edicts, 编码 Body: {:?}", payload);
 
       let mut edicts = self.edicts.clone();
       edicts.sort_by_key(|edict| edict.id);
@@ -179,19 +187,32 @@ impl Runestone {
         varint::encode_to_vec(edict.amount, &mut payload);
         varint::encode_to_vec(edict.output.into(), &mut payload);
         previous = edict.id;
+        println!("编码 edict: block={}, tx={}, amount={}, output={}", block, tx, edict.amount, edict.output);
       }
+      println!("完成 edicts 处理, 最终 payload: {:?}", payload);
     }
 
     let mut builder = script::Builder::new()
-      .push_opcode(opcodes::all::OP_RETURN)
-      .push_opcode(Runestone::MAGIC_NUMBER);
+      .push_opcode(opcodes::all::OP_RETURN)  // OP_RETURN 操作码 6a
+      .push_opcode(Runestone::MAGIC_NUMBER);  //  OP_PUSHNUM_13 => 0x5d, "Push the array `0x0d` onto the stack."
+    println!("初始化脚本构建器, 添加 OP_RETURN 和 Runestone::MAGIC_NUMBER");
+
+    // 6a op_return 操作码，表示执行到这里就应该结束，后面的都不会被执行
+    // 5d push num 13，暂时没看出来具体意义，代码里面看起来就是硬编码进去的。
+    // 08 指定要推送的字节数，可变。
+      // 14fbee9d0114ab02 实际被推送到堆栈的 8 字节数据
 
     for chunk in payload.chunks(MAX_SCRIPT_ELEMENT_SIZE) {
       let push: &script::PushBytes = chunk.try_into().unwrap();
       builder = builder.push_slice(push);
+      println!("推送 payload 数据块到脚本: {:?}", push);
+
     }
 
-    builder.into_script()
+    let script = builder.into_script();
+    println!("完成脚本构建: {:?}", script);
+    script
+    // builder.into_script()
   }
 
   fn payload(transaction: &Transaction) -> Option<Payload> {
