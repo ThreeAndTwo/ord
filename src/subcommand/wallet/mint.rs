@@ -104,14 +104,19 @@ impl Mint {
       Some(Artifact::Runestone(runestone)),
     );
 
+        // debug
         let signed_hex = signed_transaction.raw_hex();
         let tx_id = signed_transaction.txid();
         println!("Signed Transaction Hex: {}, tx id: {}", signed_hex, tx_id);
 
-        // let transaction = bitcoin_client.send_raw_transaction(&signed_transaction)?;
-        // let transaction = Transaction::default();
-        let transaction = Transaction::new();
+        let transaction = Transaction {
+            version: 1,
+            lock_time: LockTime::ZERO,
+            input: vec![],
+            output: vec![],
+        };
 
+        let tx_id = transaction.txid();
         Ok(Some(Box::new(Output {
             rune: self.rune,
             pile: Pile {
@@ -119,7 +124,7 @@ impl Mint {
                 divisibility: rune_entry.divisibility,
                 symbol: rune_entry.symbol,
             },
-            mint: transaction,
+            mint: tx_id,
         })))
     }
 }
