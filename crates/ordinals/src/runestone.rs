@@ -202,7 +202,7 @@ impl Runestone {
     // 6a op_return 操作码，表示执行到这里就应该结束，后面的都不会被执行
     // 5d push num 13，暂时没看出来具体意义，代码里面看起来就是硬编码进去的。
     // 08 指定要推送的字节数，可变。
-      // 14fbee9d0114ab02 实际被推送到堆栈的 8 字节数据
+    // 14fbee9d0114ab02 实际被推送到堆栈的 8 字节数据
 
     for chunk in payload.chunks(MAX_SCRIPT_ELEMENT_SIZE) {
       let push: &script::PushBytes = chunk.try_into().unwrap();
