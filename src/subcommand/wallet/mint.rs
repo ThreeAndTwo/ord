@@ -106,9 +106,8 @@ impl Mint {
 
         // debug
         let signed_hex = signed_transaction.raw_hex();
-        let tx_hash = signed_transaction.ntxid();
         let tx_id = signed_transaction.txid();
-        println!("Signed Transaction Hex: {}, tx id: {}, tx hash: {}", signed_hex, tx_id, tx_hash);
+        println!("Signed Transaction Hex: {}, \ntx hash: {}", signed_hex, tx_id);
         Ok(Some(Box::new(Output {
             rune: self.rune,
             pile: Pile {
