@@ -160,6 +160,7 @@ impl Runestone {
         }
 
         if let Some(RuneId { block, tx }) = self.mint {
+            println!("block: {:?}, tx: {:?}", block, tx); // data -> 14fbee9d0114ab02
             Tag::Mint.encode([block.into(), tx.into()], &mut payload);
         }
 
