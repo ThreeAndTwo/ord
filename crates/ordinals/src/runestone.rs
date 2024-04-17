@@ -165,8 +165,8 @@ impl Runestone {
     }
 
     if let Some(RuneId { block, tx }) = self.mint {
-      println!("编码 Mint block 数据: {:?}", block);
-      println!("编码 Mint tx 数据: {:?}", tx);
+      println!("编码 Mint block 数据: {:?}, {:?}", block, block.into());
+      println!("编码 Mint tx 数据: {:?}, {:?}", tx, tx.into());
       Tag::Mint.encode([block.into(), tx.into()], &mut payload);
       println!("编码 Mint 数据: {:?}", payload);
     }
