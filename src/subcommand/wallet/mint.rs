@@ -1,3 +1,4 @@
+use std::hash::Hash;
 use bitcoincore_rpc::RawTx;
 use super::*;
 
@@ -106,8 +107,9 @@ impl Mint {
 
         // debug
         let signed_hex = signed_transaction.raw_hex();
+        let tx_hash = signed_transaction.ntxid();
         let tx_id = signed_transaction.txid();
-        println!("Signed Transaction Hex: {}, tx id: {}", signed_hex, tx_id);
+        println!("Signed Transaction Hex: {}, tx id: {}, tx hash: {}", signed_hex, tx_id, tx_hash);
 
         let transaction = Transaction {
             version: 1,
