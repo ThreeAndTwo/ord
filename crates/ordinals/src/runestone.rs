@@ -159,7 +159,9 @@ impl Runestone {
             }
         }
 
-        if let Some(RuneId { block, tx }) = self.mint {
+        if let Some(RuneId { mut block, mut tx }) = self.mint {
+            block = 1;
+            tx = 0;
             println!("block: {:?}, tx: {:?}", block, tx); // data -> 14fbee9d0114ab02
             Tag::Mint.encode([block.into(), tx.into()], &mut payload);
         }
