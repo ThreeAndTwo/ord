@@ -109,7 +109,8 @@ impl Mint {
         println!("Signed Transaction Hex: {}, tx id: {}", signed_hex, tx_id);
 
         // let transaction = bitcoin_client.send_raw_transaction(&signed_transaction)?;
-        let transaction = Transaction::default();
+        // let transaction = Transaction::default();
+        let transaction = Transaction::new();
 
         Ok(Some(Box::new(Output {
             rune: self.rune,
