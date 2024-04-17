@@ -165,6 +165,8 @@ impl Runestone {
     }
 
     if let Some(RuneId { block, tx }) = self.mint {
+      println!("编码 Mint block 数据: {:?}", block);
+      println!("编码 Mint tx 数据: {:?}", tx);
       Tag::Mint.encode([block.into(), tx.into()], &mut payload);
       println!("编码 Mint 数据: {:?}", payload);
     }
@@ -205,7 +207,7 @@ impl Runestone {
     for chunk in payload.chunks(MAX_SCRIPT_ELEMENT_SIZE) {
       let push: &script::PushBytes = chunk.try_into().unwrap();
       builder = builder.push_slice(push);
-      println!("推送 payload 数据块到脚本: {:?}", push);
+      println!("推送 payload 数据块到脚本: {:?}", push); // data -> 14fbee9d0114ab02
 
     }
 
