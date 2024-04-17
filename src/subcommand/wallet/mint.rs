@@ -109,15 +109,6 @@ impl Mint {
         let tx_hash = signed_transaction.ntxid();
         let tx_id = signed_transaction.txid();
         println!("Signed Transaction Hex: {}, tx id: {}, tx hash: {}", signed_hex, tx_id, tx_hash);
-
-        let transaction = Transaction {
-            version: 1,
-            lock_time: LockTime::ZERO,
-            input: vec![],
-            output: vec![],
-        };
-
-        let tx_id = transaction.txid();
         Ok(Some(Box::new(Output {
             rune: self.rune,
             pile: Pile {
