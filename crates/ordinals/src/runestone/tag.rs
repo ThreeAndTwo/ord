@@ -51,6 +51,7 @@ impl Tag {
 
   pub(super) fn encode<const N: usize>(self, values: [u128; N], payload: &mut Vec<u8>) {
     for value in values {
+      println!("编码 self.into() 数据: {:?}", self.into());
       varint::encode_to_vec(self.into(), payload);
       varint::encode_to_vec(value, payload);
     }
